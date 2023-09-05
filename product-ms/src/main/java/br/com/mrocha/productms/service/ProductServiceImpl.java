@@ -15,9 +15,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository repository;
+
+    @Autowired
+    private ModelMapper mapper;
+
     @Override
     public Optional<ProductDTO> create(ProductDTO request) {
-        ModelMapper mapper = new ModelMapper();
         Product product = mapper.map(request, Product.class);
 
         repository.save(product);
@@ -29,7 +32,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getAll() {
-        ModelMapper mapper = new ModelMapper();
         List<Product> products = repository.findAll();
         List<ProductDTO> responses = new ArrayList<>();
 
@@ -40,4 +42,34 @@ public class ProductServiceImpl implements ProductService {
 
         return responses;
     }
+
+    @Override
+    public Optional<ProductDTO> getById(Long id) {
+        Optional<Product> product = repository.findById(id);
+        if (product.isPresent()) {
+            return Optional.of(mapper.map(product.get(), ProductDTO.class));
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean inactive(Long id) {
+        Optional<Product> product = repository.findById(id);
+        if (product.isPresent()) {
+            product.get().setAvailable(false);
+            return true;
+        }
+        return false;
+    }
+@Override
+    public boolean delete(Long id) {
+        Optional<Product> product = repository.findById(id);
+        if (product.isPresent()) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
 }
