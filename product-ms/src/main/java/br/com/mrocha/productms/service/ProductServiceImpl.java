@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import br.com.mrocha.productms.service.ProductServiceImpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
@@ -23,5 +25,19 @@ public class ProductServiceImpl implements ProductService {
         ProductDTO response = mapper.map(product, ProductDTO.class);
 
         return Optional.of(response);
+    }
+
+    @Override
+    public List<ProductDTO> getAll() {
+        ModelMapper mapper = new ModelMapper();
+        List<Product> products = repository.findAll();
+        List<ProductDTO> responses = new ArrayList<>();
+
+        for (Product product : products) {
+            ProductDTO response = mapper.map(product, ProductDTO.class);
+            responses.add(response);
+        }
+
+        return responses;
     }
 }
