@@ -54,6 +54,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Optional<ProductDTO> update(Long id, ProductDTO request) {
+        Optional<Product> product = repository.findById(id);
+        if (product.isPresent()) {
+            product.get().setDescription(request.getDescription());
+            product.get().setPrice(request.getPrice());
+            repository.save(product.get());
+            return Optional.of(mapper.map(product.get(), ProductDTO.class));
+        }
+        return Optional.empty();
+    }
+
+
+    @Override
     public boolean inactive(Long id) {
         Optional<Product> product = repository.findById(id);
         if (product.isPresent()) {
@@ -62,14 +75,14 @@ public class ProductServiceImpl implements ProductService {
         }
         return false;
     }
-@Override
-    public boolean delete(Long id) {
-        Optional<Product> product = repository.findById(id);
-        if (product.isPresent()) {
-            repository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
+//@Override
+//    public boolean delete(Long id) {
+//        Optional<Product> product = repository.findById(id);
+//        if (product.isPresent()) {
+//            repository.deleteById(id);
+//            return true;
+//        }
+//        return false;
+//    }
 
 }
