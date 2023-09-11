@@ -5,12 +5,13 @@ import br.com.mrocha.productms.model.Product;
 import br.com.mrocha.productms.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import br.com.mrocha.productms.service.ProductServiceImpl;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
@@ -21,9 +22,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<ProductDTO> create(ProductDTO request) {
+        request.setAvailable(true);
         Product product = mapper.map(request, Product.class);
 
-        repository.save(product);
+        repository.saveAndFlush(product);
 
         ProductDTO response = mapper.map(product, ProductDTO.class);
 
@@ -71,6 +73,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> product = repository.findById(id);
         if (product.isPresent()) {
             product.get().setAvailable(false);
+            repository.save(product.get());
             return true;
         }
         return false;
