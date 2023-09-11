@@ -24,5 +24,4 @@ public class Product {
 
     @Column(name = "available")
     private boolean available;
-
 }
