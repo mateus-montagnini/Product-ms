@@ -1,7 +1,10 @@
 package br.com.mrocha.productms.service;
 
 import br.com.mrocha.productms.dto.ProductDTO;
+import br.com.six2six.fixturefactory.Fixture;
+import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,13 +17,14 @@ public class ProductServiceTest {
     @Autowired
     private ProductService service;
 
+    @BeforeAll
+    public static void setUp() {
+        FixtureFactoryLoader.loadTemplates("br.com.mrocha.productms.fixture");
+    }
+
     @Test
     public void shouldCreateProduct() {
-        ProductDTO request = new ProductDTO();
-        request.setName("Produto Novo");
-        request.setDescription("Descricao do produto com mais de cinquenta caracteres Descricao do produto com mais de cinquenta caracteres Descricao do produto com mais de cinquenta caracteres");
-        request.setPrice(6999.90);
-
+        ProductDTO request = Fixture.from(ProductDTO.class).gimme("valid");
         Optional<ProductDTO> response = service.create(request);
         Assertions.assertNotNull(response.get());
         Assertions.assertEquals(request.getName(), response.get().getName());
