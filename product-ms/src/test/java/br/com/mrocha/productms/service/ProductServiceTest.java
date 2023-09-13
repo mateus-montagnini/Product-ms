@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 import java.util.List;
@@ -51,5 +50,20 @@ public class ProductServiceTest {
         assertEquals(responses.get(0).getName(), response.get().getName());
         assertEquals(responses.get(0).getDescription(), response.get().getDescription());
         Assertions.assertEquals(responses.get(0).getPrice(), response.get().getPrice());
+    }
+
+    @Test
+    public void shouldGetProductById() {
+        ProductDTO request = Fixture.from(ProductDTO.class).gimme("valid");
+        Optional<ProductDTO> response = service.create(request);
+        
+        Long id = response.get().getId();
+
+        Optional<ProductDTO> responseById = service.getById(id);
+        assertNotNull(responseById.get());
+        assertEquals(request.getDescription(), responseById.get().getDescription());
+        assertEquals(request.getName(), responseById.get().getName());
+        Assertions.assertEquals(request.getPrice(), responseById.get().getPrice());
+        assertTrue(responseById.get().isAvailable());
     }
 }
