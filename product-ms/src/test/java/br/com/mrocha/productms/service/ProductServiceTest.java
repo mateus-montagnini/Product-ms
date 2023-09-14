@@ -66,4 +66,24 @@ public class ProductServiceTest {
         Assertions.assertEquals(request.getPrice(), responseById.get().getPrice());
         assertTrue(responseById.get().isAvailable());
     }
+
+    @Test
+    public void shouldUpdateProduct() {
+        ProductDTO request = Fixture.from(ProductDTO.class).gimme("valid");
+        Optional<ProductDTO> response = service.create(request);
+        Long id = response.get().getId();
+
+        String newDescription = "Descricao do produto foi atualizada, Descricao do produto foi atualizada, Descricao do produto foi atualizada";
+        request.setDescription(newDescription);
+
+        double newPrice = 3899.50;
+        request.setPrice(newPrice);
+
+        Optional<ProductDTO> updatedProductDTO = service.update(id, request);
+
+        assertNotNull(updatedProductDTO.get());
+        assertEquals(newDescription, updatedProductDTO.get().getDescription());
+        Assertions.assertEquals(newPrice, updatedProductDTO.get().getPrice());
+//        assertTrue(response.get().isAvailable());
+    }
 }
