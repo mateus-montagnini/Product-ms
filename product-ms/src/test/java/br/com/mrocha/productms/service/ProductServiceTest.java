@@ -84,6 +84,16 @@ public class ProductServiceTest {
         assertNotNull(updatedProductDTO.get());
         assertEquals(newDescription, updatedProductDTO.get().getDescription());
         Assertions.assertEquals(newPrice, updatedProductDTO.get().getPrice());
-//        assertTrue(response.get().isAvailable());
+    }
+
+    @Test
+    public void shouldInactivateProduct() {
+        ProductDTO request = Fixture.from(ProductDTO.class).gimme("valid");
+        Optional<ProductDTO> response = service.create(request);
+        Long id = response.get().getId();
+
+        boolean inactive = service.inactive(id);
+
+        assertTrue(inactive);
     }
 }
