@@ -1,0 +1,40 @@
+package br.com.mrocha.productms.controller;
+
+import br.com.mrocha.productms.dto.ProductDTO;
+import br.com.six2six.fixturefactory.Fixture;
+import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class ProductControllerTest {
+
+    @Autowired
+    private MockMvc mvc;
+
+    @Autowired
+    private ObjectMapper mapper;
+
+    @BeforeAll
+    public static void setUp() {
+        FixtureFactoryLoader.loadTemplates("br.com.mrocha.productms.fixture");
+    }
+
+    @Test
+    public void shouldCreateProduct() throws Exception {
+        ProductDTO reequest = Fixture.from(ProductDTO.class).gimme("valid");
+        String content = mapper.writeValueAsString(reequest);
+
+        mvc.perform(
+                MockMvcRequestBuilders.post("/products")
+        )
+    }
+}
