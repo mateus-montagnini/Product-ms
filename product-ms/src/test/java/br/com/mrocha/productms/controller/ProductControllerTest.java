@@ -10,8 +10,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.MediaType.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,8 +41,10 @@ public class ProductControllerTest {
         ProductDTO reequest = Fixture.from(ProductDTO.class).gimme("valid");
         String content = mapper.writeValueAsString(reequest);
 
-        mvc.perform(
-                MockMvcRequestBuilders.post("/products")
-        )
+        mvc.perform(post("/products")
+                        .header(AUTHORIZATION, "Bearer foo")
+                        .contentType(APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 }
