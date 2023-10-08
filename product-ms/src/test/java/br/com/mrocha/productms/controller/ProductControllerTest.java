@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -38,13 +39,25 @@ public class ProductControllerTest {
 
     @Test
     public void shouldCreateProduct() throws Exception {
-        ProductDTO reequest = Fixture.from(ProductDTO.class).gimme("valid");
-        String content = mapper.writeValueAsString(reequest);
+        ProductDTO request = Fixture.from(ProductDTO.class).gimme("valid");
+        String content = mapper.writeValueAsString(request);
 
         mvc.perform(post("/products")
                         .header(AUTHORIZATION, "Bearer foo")
                         .contentType(APPLICATION_JSON)
                         .content(content))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void shouldNotCreateProduct() throws Exception {
+        ProductDTO request = new ProductDTO();
+        String content = mapper.writeValueAsString(request);
+
+        mvc.perform(post("/products")
+                        .header(AUTHORIZATION, "Bearer foo")
+                        .contentType(APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isBadRequest());
     }
 }
