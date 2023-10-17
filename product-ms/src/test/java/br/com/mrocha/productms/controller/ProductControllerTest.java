@@ -60,4 +60,11 @@ public class ProductControllerTest {
                         .content(content))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void shouldGetAllProducts() throws Exception {
+        mvc.perform(get("/products")
+                .header(AUTHORIZATION, "Bearer foo"))
+                .andExpect(status().isOk());
+    }
 }
