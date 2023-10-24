@@ -1,6 +1,7 @@
 package br.com.mrocha.productms.controller;
 
 import br.com.mrocha.productms.dto.ProductDTO;
+import br.com.mrocha.productms.repository.ProductRepository;
 import br.com.six2six.fixturefactory.Fixture;
 import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +29,9 @@ public class ProductControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    ProductRepository repository;
 
     @Autowired
     private ObjectMapper mapper;
@@ -64,6 +68,16 @@ public class ProductControllerTest {
     @Test
     public void shouldGetAllProducts() throws Exception {
         mvc.perform(get("/products")
+                .header(AUTHORIZATION, "Bearer foo"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldGetById() throws Exception {
+
+        Long id = repository.findAll().get(0).getId();
+
+        mvc.perform(get("products/{id}", id)
                 .header(AUTHORIZATION, "Bearer foo"))
                 .andExpect(status().isOk());
     }
